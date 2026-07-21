@@ -14,7 +14,7 @@ interface SaveData {
   blade: string;                 // selected blade skin id
 }
 
-const KEY = 'neon-fruit-cutter-save-v1';
+const KEY = 'fruit-cutter-game-save-v1';
 
 function fresh(): SaveData {
   return {
