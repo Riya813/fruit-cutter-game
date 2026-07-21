@@ -11,7 +11,7 @@ npm run build    # production build in dist/
 npm run preview  # serve the production build
 ```
 
-Target: 60 FPS, responsive canvas (`Scale.FIT`, desktop-first, touch-ready)
+Target: 60 FPS, responsive canvas (`Scale.FIT`, desktop-first, touch-ready).
 
 ## Controls
 
