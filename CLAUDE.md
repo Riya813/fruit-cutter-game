@@ -67,6 +67,36 @@ Each entry paraphrases the request that drove a change, plus what was built.
    `base: './'` (relative paths → works at any URL) and a GitHub Actions
    Pages workflow. One repo per game; Pages source set to "GitHub Actions".
 
+7. **"Game is not centered; spherical balls instead of proper fruits."** →
+   Centering: removed flex centering from the container (it stacked with
+   Phaser's autoCenter margins and pushed the canvas off-center); container
+   is now full-viewport, Phaser centers alone. Fruits: replaced generic
+   circles with drawn fruits — striped watermelon, dimpled orange with leaf,
+   apple with stem, lemon, fuzzy kiwi, dragonfruit — each with detailed cut
+   halves (flesh, seeds, rind). Splatter particles now use a per-fruit
+   `juice` color (watermelon bleeds pink, not green).
+
+8. **"Eye-soothing palette + new menu layout."** → Chose "Twilight lavender":
+   dusky plum background (#221c33→#35294d), lavender primary #b8a7e8, mint
+   secondary #9fe3c6, peach accent #ffcba4. Rule: chrome/UI is soft, impact
+   effects (juice, crits, bombs) stay vivid so hits still feel juicy.
+   Menu rebuilt as hero + grid: one oversized breathing PLAY, utilities
+   (Tutorial / Blade / Sound / Reset) in a 2×2 grid, one status line below.
+   Default blade skin renamed "Lavender Mist" (#b8a7e8); unlockable skins
+   stay vivid as rewards.
+
+9. **"Add 10 blade effects and 30 more levels."** → Campaign expanded to 40
+   levels in four worlds (Twilight Orchard / Windward Grove / Ion Tempest /
+   Aurora Summit); 1-10 stay hand-tuned, 11-40 come from `genLevel()` whose
+   growth slows as parameters cap and whose longer timers carry the higher
+   targets; storm boss every 10th level with bursts 12/15/18/21. LevelSelect
+   is paged (4 world pages of 10, arrows + dots, opens on the frontier
+   world). Save migrates old 10-record saves by padding to 40; max stars is
+   now 120. Blade skins became 10 blade *effects* with a `style` field
+   rendered by the shared `TrailRenderer` (classic/ember/arc/petal/frost/
+   glitch/shadow/rainbow); unlocks at 0/8/16/24/36/48/60/75/90/105 stars.
+   Endless still unlocks by clearing level 10; Victory now fires at level 40.
+
 ## Design decisions worth preserving
 
 - **Manual physics, not Arcade bodies.** `Fruit.step()` integrates gravity +

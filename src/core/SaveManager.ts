@@ -14,12 +14,12 @@ interface SaveData {
   blade: string;                 // selected blade skin id
 }
 
-const KEY = 'fruit-cutter-game-save-v1';
+const KEY = 'neon-fruit-cutter-save-v1';
 
 function fresh(): SaveData {
   return {
     unlocked: 1,
-    records: Array.from({ length: 10 }, () => ({ stars: 0, bestScore: 0, bestTime: 0 })),
+    records: Array.from({ length: 40 }, () => ({ stars: 0, bestScore: 0, bestTime: 0 })),
     muted: false,
     tutorialSeen: false,
     endlessBest: 0,
@@ -36,6 +36,10 @@ class SaveManagerImpl {
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) this.data = { ...fresh(), ...JSON.parse(raw) };
+      // Migrate pre-expansion saves (10 records) to 40 levels.
+      while (this.data.records.length < 40) {
+        this.data.records.push({ stars: 0, bestScore: 0, bestTime: 0 });
+      }
     } catch {
       /* corrupted or unavailable storage → start fresh */
     }
@@ -103,7 +107,7 @@ class SaveManagerImpl {
     rec.stars = Math.max(rec.stars, stars);
     rec.bestScore = Math.max(rec.bestScore, score);
     if (rec.bestTime === 0 || timeTaken < rec.bestTime) rec.bestTime = timeTaken;
-    this.data.unlocked = Math.max(this.data.unlocked, Math.min(10, level + 1));
+    this.data.unlocked = Math.max(this.data.unlocked, Math.min(40, level + 1));
     this.persist();
     return stars;
   }

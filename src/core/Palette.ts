@@ -1,16 +1,17 @@
 export const GAME_WIDTH = 960;
 export const GAME_HEIGHT = 640;
 
-// Cohesive neon-on-dark palette. Everything on screen derives from these.
+// "Twilight lavender" — eye-soothing pastels on dusky plum.
+// Chrome/UI stays soft; impact effects (juice, crits, bombs) stay vivid.
 export const Palette = {
-  bgTop: 0x1a0b2e,      // deep violet
-  bgBottom: 0x2d1152,   // brighter purple toward the floor
-  primary: 0xff2e97,    // hot magenta — titles, slice trail core
-  secondary: 0x2ee6ff,  // electric cyan — UI chrome, timers
-  accent: 0xffe14d,     // citrus yellow — combos, stars, criticals
-  danger: 0xff3b3b,     // bomb red
-  good: 0x53ff9a,       // success green
-  textDim: 0x9d8fc4,    // muted lavender for secondary text
+  bgTop: 0x221c33,      // dusky plum
+  bgBottom: 0x35294d,   // lighter twilight toward the floor
+  primary: 0xb8a7e8,    // soft lavender — titles, hero button, default trail
+  secondary: 0x9fe3c6,  // gentle mint — UI chrome, timers, barriers
+  accent: 0xffcba4,     // warm peach — combos, stars, criticals
+  danger: 0xff7a7a,     // softened red (still unmistakably "danger")
+  good: 0xa8e6b8,       // calm green
+  textDim: 0xa99cc7,    // muted lavender-gray for secondary text
   white: 0xffffff,
 } as const;
 

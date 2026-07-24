@@ -14,7 +14,7 @@ export class GameOverScene extends Phaser.Scene {
 
   create(data: ResultData) {
     drawBackground(this);
-    this.cameras.main.fadeIn(200, 18, 8, 31);
+    this.cameras.main.fadeIn(200, 34, 28, 51);
 
     const heading =
       data.mode === 'endless' ? (data.record ? 'NEW RECORD!' : 'RUN OVER') :
@@ -58,7 +58,7 @@ export class GameOverScene extends Phaser.Scene {
     neonButton(this, GAME_WIDTH / 2, 440, retryLabel,
       () => this.retry(data), 280, 58, data.won || data.record ? Palette.secondary : Palette.primary);
 
-    const isNextable = data.mode === 'campaign' && data.won && data.level < 10;
+    const isNextable = data.mode === 'campaign' && data.won && data.level < 40;
     if (isNextable) {
       neonButton(this, GAME_WIDTH / 2, 515, 'NEXT LEVEL →', () =>
         goTo(this, 'Game', { level: data.level + 1 }), 280, 58, Palette.good);

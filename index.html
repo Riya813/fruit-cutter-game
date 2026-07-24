@@ -3,22 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Neon Fruit Cutter</title>
+    <title>Fruit Cutter Game</title>
     <style>
       html, body {
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
-        background: #12081f;
+        background: #1b1629;
         overflow: hidden;
       }
+      /* Full-viewport container; Phaser's autoCenter does the centering.
+         (Flex + autoCenter margins stack and push the canvas off-center.) */
       #game {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: fixed;
+        inset: 0;
       }
       canvas {
         touch-action: none;

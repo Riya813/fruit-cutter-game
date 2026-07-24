@@ -1,20 +1,28 @@
 import { Save } from './SaveManager';
 
-/** Blade skins unlocked by total stars. The trail is the reward surface. */
+export type BladeStyle = 'classic' | 'ember' | 'arc' | 'petal' | 'frost' | 'glitch' | 'shadow' | 'rainbow';
+
+/** Blade skins unlocked by total stars (max 120 across 40 levels). */
 export interface BladeSkin {
   id: string;
   name: string;
   req: number;          // total stars required
   core: number;         // inner stroke color
   glow: number;         // outer glow color
-  rainbow?: boolean;    // hue-cycling override
+  style: BladeStyle;    // how the trail renders (see TrailRenderer)
 }
 
 export const SKINS: BladeSkin[] = [
-  { id: 'neon',     name: 'Neon Pink',   req: 0,  core: 0xffffff, glow: 0xff2e97 },
-  { id: 'plasma',   name: 'Plasma Cyan', req: 10, core: 0xffffff, glow: 0x2ee6ff },
-  { id: 'solar',    name: 'Solar Gold',  req: 20, core: 0xfff7cc, glow: 0xffe14d },
-  { id: 'spectrum', name: 'Spectrum',    req: 30, core: 0xffffff, glow: 0xff2e97, rainbow: true },
+  { id: 'neon',     name: 'Lavender Mist', req: 0,   core: 0xffffff, glow: 0xb8a7e8, style: 'classic' },
+  { id: 'plasma',   name: 'Plasma Cyan',   req: 8,   core: 0xffffff, glow: 0x59e6ff, style: 'classic' },
+  { id: 'ember',    name: 'Ember Blade',   req: 16,  core: 0xfff1d6, glow: 0xff8c3a, style: 'ember' },
+  { id: 'arc',      name: 'Electric Arc',  req: 24,  core: 0xffffff, glow: 0xfff27a, style: 'arc' },
+  { id: 'petal',    name: 'Petal Wind',    req: 36,  core: 0xfff0f6, glow: 0xff9ec8, style: 'petal' },
+  { id: 'frost',    name: 'Frost Edge',    req: 48,  core: 0xffffff, glow: 0x9fd8ff, style: 'frost' },
+  { id: 'solar',    name: 'Solar Gold',    req: 60,  core: 0xfff7cc, glow: 0xffd75e, style: 'classic' },
+  { id: 'glitch',   name: 'Glitch Blade',  req: 75,  core: 0xffffff, glow: 0x59f0ff, style: 'glitch' },
+  { id: 'shadow',   name: 'Shadow Reaper', req: 90,  core: 0x2a1840, glow: 0x6a44a8, style: 'shadow' },
+  { id: 'spectrum', name: 'Spectrum',      req: 105, core: 0xffffff, glow: 0xb8a7e8, style: 'rainbow' },
 ];
 
 export function unlockedSkins(): BladeSkin[] {
@@ -27,17 +35,9 @@ export function currentSkin(): BladeSkin {
   return unlocked.find(s => s.id === Save.blade) ?? unlocked[0];
 }
 
-/** Trail colors for this frame; Spectrum cycles hue over time. */
-export function trailColors(timeNow: number): { core: number; glow: number } {
-  const skin = currentSkin();
-  if (!skin.rainbow) return { core: skin.core, glow: skin.glow };
-  const hue = (timeNow / 12) % 360;
-  const c = PhaserHSV(hue / 360);
-  return { core: 0xffffff, glow: c };
-}
-
-// Minimal HSV→RGB (s=1, v=1) without importing Phaser here.
-function PhaserHSV(h: number): number {
+/** Hue-cycling color for the Spectrum blade. */
+export function hueCycle(timeNow: number): number {
+  const h = (timeNow / 12) % 360 / 360;
   const i = Math.floor(h * 6);
   const f = h * 6 - i;
   const q = 1 - f;

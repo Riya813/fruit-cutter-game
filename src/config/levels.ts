@@ -69,3 +69,47 @@ export const DAILY_CFG: LevelConfig = {
   barriers: 1, speedMul: 1.3, wind: 70, timeLimit: 60,
   targetScore: 0, parScore: 0, sizeWeights: [3, 4, 3], storm: false,
 };
+
+// ---------------------------------------------------------------- worlds 2–4
+
+export const WORLD_NAMES = ['Twilight Orchard', 'Windward Grove', 'Ion Tempest', 'Aurora Summit'];
+
+const GEN_NAMES = [
+  // World 2 (11–20): wind theme
+  'Zephyr Rise', 'Twin Gust', 'Petal Drift', 'Beam Dance', 'Slipstream',
+  'Gale Lines', 'Crosscut', 'Updraft', 'Whirl Edge', 'Gale Tempest',
+  // World 3 (21–30): storm/electric theme
+  'Static Bloom', 'Ion Drizzle', 'Pulse Field', 'Arc Light', 'Surge Row',
+  'Volt Orchard', 'Flux Gate', 'Storm Chase', 'Thunder Ripe', 'Storm Apex',
+  // World 4 (31–40): aurora theme
+  'Aurora Gate', 'Polar Bloom', 'Halo Rush', 'Prism Wind', 'Radiant Tide',
+  'Corona Cut', 'Zenith Drift', 'Nova Grove', 'Dawn Cascade', 'Aurora Cataclysm',
+];
+
+/**
+ * Levels 11–40 continue the hand-tuned curve by formula. Growth slows as
+ * parameters approach their caps; longer timers carry the higher targets.
+ * Every 10th level is a storm boss.
+ */
+function genLevel(n: number): LevelConfig {
+  const k = n - 10; // 1..30
+  const target = Math.round((2300 + k * 90) / 50) * 50;
+  return {
+    id: n,
+    name: GEN_NAMES[n - 11],
+    spawnInterval: Math.max(450, 800 - k * 12),
+    burst: [n >= 25 ? 4 : 3, n >= 20 ? 6 : 5],
+    bombChance: Math.min(0.26, 0.22 + k * 0.0015),
+    spikeChance: Math.min(0.14, 0.12 + k * 0.001),
+    barriers: n >= 14 ? 3 : 2,
+    speedMul: Math.min(1.75, 1.58 + k * 0.006),
+    wind: Math.min(170, 140 + k),
+    timeLimit: Math.round(70 + k * 0.7),
+    targetScore: target,
+    parScore: Math.round(target * 1.75 / 50) * 50,
+    sizeWeights: [n > 25 ? 6 : 5, 3, 2],
+    storm: n % 10 === 0,
+  };
+}
+
+for (let n = 11; n <= 40; n++) LEVELS.push(genLevel(n));

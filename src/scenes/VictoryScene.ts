@@ -9,7 +9,7 @@ export class VictoryScene extends Phaser.Scene {
 
   create(data: { score: number; stars: number }) {
     drawBackground(this);
-    this.cameras.main.fadeIn(300, 18, 8, 31);
+    this.cameras.main.fadeIn(300, 34, 28, 51);
 
     // Continuous confetti rain in palette colors.
     this.add.particles(0, -10, PARTICLE_KEY, {
@@ -24,11 +24,11 @@ export class VictoryScene extends Phaser.Scene {
       tint: [Palette.primary, Palette.secondary, Palette.accent, Palette.good],
     });
 
-    const t = title(this, GAME_WIDTH / 2, 140, 'FRUIT STORM SURVIVED!', 48);
+    const t = title(this, GAME_WIDTH / 2, 140, 'ALL 40 LEVELS CLEARED!', 48);
     t.setScale(0);
     this.tweens.add({ targets: t, scale: 1, duration: 600, ease: 'Elastic.easeOut' });
 
-    label(this, GAME_WIDTH / 2, 205, 'All 10 levels complete — you are the Neon Blade.', 20);
+    label(this, GAME_WIDTH / 2, 205, 'Aurora Cataclysm survived — you are the Neon Blade.', 20);
 
     const scoreText = this.add.text(GAME_WIDTH / 2, 270, '0', {
       fontFamily: Fonts.display, fontSize: '52px', color: hex(Palette.accent),
@@ -37,15 +37,15 @@ export class VictoryScene extends Phaser.Scene {
 
     starRow(this, GAME_WIDTH / 2, 345, data.stars, 38, true);
 
-    const total = Array.from({ length: 10 }, (_, i) => Save.record(i + 1).stars).reduce((a, b) => a + b, 0);
-    label(this, GAME_WIDTH / 2, 400, `Total stars collected: ${total} / 30`, 18, Palette.accent);
+    const total = Array.from({ length: 40 }, (_, i) => Save.record(i + 1).stars).reduce((a, b) => a + b, 0);
+    label(this, GAME_WIDTH / 2, 400, `Total stars collected: ${total} / 120`, 18, Palette.accent);
     label(this, GAME_WIDTH / 2, 428, 'ENDLESS MODE UNLOCKED — find it in Level Select', 16, Palette.good);
 
     neonButton(this, GAME_WIDTH / 2, 480, 'PLAY AGAIN', () =>
-      goTo(this, 'Game', { level: 10 }), 280, 58, Palette.primary);
+      goTo(this, 'Game', { level: 40 }), 280, 58, Palette.primary);
     neonButton(this, GAME_WIDTH / 2, 555, 'LEVEL SELECT', () =>
       goTo(this, 'LevelSelect'), 280, 52, Palette.secondary);
 
-    label(this, GAME_WIDTH / 2, GAME_HEIGHT - 30, 'Chase 30 stars: beat PAR on every level without retries.', 15);
+    label(this, GAME_WIDTH / 2, GAME_HEIGHT - 30, 'Chase 120 stars: beat PAR on every level without retries.', 15);
   }
 }

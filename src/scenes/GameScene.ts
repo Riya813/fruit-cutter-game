@@ -5,7 +5,7 @@ import { FRUITS, SPECIALS, GLOW_KEY, PARTICLE_KEY } from '../core/TextureFactory
 import { InputManager, SwipePoint } from '../core/InputManager';
 import { Audio } from '../core/AudioManager';
 import { Save } from '../core/SaveManager';
-import { trailColors } from '../core/Skins';
+import { TrailRenderer } from '../core/TrailRenderer';
 import { Palette, Fonts, hex, GAME_WIDTH, GAME_HEIGHT } from '../core/Palette';
 import { drawBackground } from '../core/Ui';
 
@@ -38,7 +38,7 @@ export class GameScene extends Phaser.Scene {
 
   private fruits: Fruit[] = [];
   private inputMgr!: InputManager;
-  private trailGfx!: Phaser.GameObjects.Graphics;
+  private trail!: TrailRenderer;
   private trailPoints: SwipePoint[] = [];
 
   private score = 0;
@@ -111,11 +111,11 @@ export class GameScene extends Phaser.Scene {
 
   create() {
     drawBackground(this);
-    this.cameras.main.fadeIn(200, 18, 8, 31);
+    this.cameras.main.fadeIn(200, 34, 28, 51);
     this.buildHud();
     this.barrierGfx = this.add.graphics().setDepth(30);
-    this.trailGfx = this.add.graphics().setDepth(50);
-    this.slowVeil = this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x2ee6ff, 0)
+    this.trail = new TrailRenderer(this, 50);
+    this.slowVeil = this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x9fe3c6, 0)
       .setDepth(35);
 
     this.rebuildBarriers();
@@ -465,13 +465,14 @@ export class GameScene extends Phaser.Scene {
     // Juice: halves, splatter particles, glow flash, score popup.
     f.spawnHalves(angle);
     const color = f.kind!.color;
+    const juice = f.kind!.juice;
     this.burstParticles(f.x, f.y, {
       speed: { min: 80, max: 320 },
       angle: { min: 0, max: 360 },
       scale: { start: 1.4, end: 0 },
       lifespan: { min: 300, max: 650 },
       gravityY: 500,
-      tint: f.special === 'rainbow' ? [0xff2e97, 0xffe14d, 0x53ff9a, 0x2ee6ff] : color,
+      tint: f.special === 'rainbow' ? [0xff2e97, 0xffe14d, 0x53ff9a, 0x2ee6ff] : juice,
     }, critical || f.special ? 26 : 14);
 
     const flash = this.add.image(f.x, f.y, GLOW_KEY).setTint(color).setScale(critical ? 4 : 2.4).setDepth(40);
@@ -672,7 +673,7 @@ export class GameScene extends Phaser.Scene {
         this.retries, beatPar,
       );
       this.time.delayedCall(400, () => {
-        if (this.cfg.id === 10) {
+        if (this.cfg.id === 40) {
           this.scene.start('Victory', { score: this.score, stars });
         } else {
           this.scene.start('GameOver', { mode: 'campaign', won: true, level: this.cfg.id, score: this.score, stars, retries: this.retries });
@@ -736,7 +737,9 @@ export class GameScene extends Phaser.Scene {
         this.stormAcc = 0;
         this.popup(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 60, 'FRUIT STORM!', Palette.primary, 46);
         this.cameras.main.shake(300, 0.006);
-        this.spawnBurst(12);
+        // Boss storms grow with the world: L10=12, L20=15, L30=18, L40=21.
+        const size = this.mode === 'campaign' ? 12 + (Math.floor(this.cfg.id / 10) - 1) * 3 : 12;
+        this.spawnBurst(size);
       }
     }
 
@@ -765,21 +768,9 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  /** Neon swipe trail in the equipped blade skin: wide glow + thin core. */
+  /** Trail rendering is delegated to the equipped blade's style. */
   private drawTrail() {
-    this.trailGfx.clear();
-    const pts = this.trailPoints;
-    if (pts.length < 2) return;
-    const now = this.time.now;
-    const skin = trailColors(now);
-    for (let i = 1; i < pts.length; i++) {
-      const age = (now - pts[i].t) / this.inputMgr.maxTrailAge;
-      const alpha = Phaser.Math.Clamp(1 - age, 0, 1);
-      this.trailGfx.lineStyle(14 * alpha, skin.glow, 0.35 * alpha);
-      this.trailGfx.lineBetween(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
-      this.trailGfx.lineStyle(5 * alpha, skin.core, 0.9 * alpha);
-      this.trailGfx.lineBetween(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
-    }
+    this.trail.draw(this.trailPoints, this.inputMgr.maxTrailAge);
   }
 
   /** Rotating laser barriers: pulsing cyan beams the blade cannot pass. */

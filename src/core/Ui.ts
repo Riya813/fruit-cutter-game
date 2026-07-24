@@ -49,14 +49,14 @@ export function label(scene: Phaser.Scene, x: number, y: number, text: string, s
 
 export function neonButton(
   scene: Phaser.Scene, x: number, y: number, text: string, onClick: () => void,
-  w = 260, h = 58, color: number = Palette.secondary,
+  w = 260, h = 58, color: number = Palette.secondary, fontSize = 24,
 ) {
   const c = scene.add.container(x, y);
   const bg = scene.add.rectangle(0, 0, w, h, 0x000000, 0.35)
     .setStrokeStyle(3, color, 1);
   const glowRect = scene.add.rectangle(0, 0, w + 10, h + 10, color, 0.08);
   const t = scene.add.text(0, 0, text, {
-    fontFamily: Fonts.display, fontSize: '24px', color: hex(Palette.white),
+    fontFamily: Fonts.display, fontSize: `${fontSize}px`, color: hex(Palette.white),
   }).setOrigin(0.5);
   c.add([glowRect, bg, t]);
   c.setSize(w, h).setInteractive({ useHandCursor: true });
@@ -106,6 +106,6 @@ export function tickScore(scene: Phaser.Scene, textObj: Phaser.GameObjects.Text,
 
 /** Full-screen fade transition into another scene. */
 export function goTo(scene: Phaser.Scene, key: string, data?: object) {
-  scene.cameras.main.fadeOut(220, 18, 8, 31);
+  scene.cameras.main.fadeOut(220, 34, 28, 51);
   scene.cameras.main.once('camerafadeoutcomplete', () => scene.scene.start(key, data));
 }

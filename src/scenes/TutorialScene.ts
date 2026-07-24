@@ -6,7 +6,7 @@ import { Fruit, FruitVariant } from '../objects/Fruit';
 import { InputManager, SwipePoint } from '../core/InputManager';
 import { Audio } from '../core/AudioManager';
 import { Save } from '../core/SaveManager';
-import { trailColors } from '../core/Skins';
+import { TrailRenderer } from '../core/TrailRenderer';
 
 /**
  * Interactive tutorial: seven hands-on steps in a pressure-free sandbox
@@ -26,7 +26,7 @@ export class TutorialScene extends Phaser.Scene {
   private step = 0;
   private fruits: Fruit[] = [];
   private inputMgr!: InputManager;
-  private trailGfx!: Phaser.GameObjects.Graphics;
+  private trail!: TrailRenderer;
   private barrierGfx!: Phaser.GameObjects.Graphics;
   private trailPoints: SwipePoint[] = [];
   private instr!: Phaser.GameObjects.Text;
@@ -46,9 +46,9 @@ export class TutorialScene extends Phaser.Scene {
     this.respawnAt = 0;
 
     drawBackground(this);
-    this.cameras.main.fadeIn(250, 18, 8, 31);
+    this.cameras.main.fadeIn(250, 34, 28, 51);
     this.barrierGfx = this.add.graphics().setDepth(30);
-    this.trailGfx = this.add.graphics().setDepth(50);
+    this.trail = new TrailRenderer(this, 50);
 
     // Instruction panel.
     this.add.rectangle(GAME_WIDTH / 2, 84, 640, 104, 0x000000, 0.45)
@@ -183,7 +183,7 @@ export class TutorialScene extends Phaser.Scene {
     f.spawnHalves(angle);
     const em = this.add.particles(f.x, f.y, PARTICLE_KEY, {
       speed: { min: 80, max: 300 }, scale: { start: 1.3, end: 0 },
-      lifespan: { min: 250, max: 550 }, gravityY: 500, tint: f.kind!.color, emitting: false,
+      lifespan: { min: 250, max: 550 }, gravityY: 500, tint: f.kind!.juice, emitting: false,
     });
     em.explode(critical ? 24 : 12, f.x, f.y);
     this.time.delayedCall(1000, () => em.destroy());
@@ -264,18 +264,9 @@ export class TutorialScene extends Phaser.Scene {
   update(_time: number, deltaMs: number) {
     const dt = Math.min(deltaMs, 50) / 1000;
 
-    // Trail.
-    this.trailGfx.clear();
-    const pts = this.trailPoints;
+    // Trail (equipped blade style).
+    this.trail.draw(this.trailPoints, this.inputMgr.maxTrailAge);
     const now = this.time.now;
-    const skin = trailColors(now);
-    for (let i = 1; i < pts.length; i++) {
-      const alpha = Phaser.Math.Clamp(1 - (now - pts[i].t) / this.inputMgr.maxTrailAge, 0, 1);
-      this.trailGfx.lineStyle(14 * alpha, skin.glow, 0.35 * alpha);
-      this.trailGfx.lineBetween(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
-      this.trailGfx.lineStyle(5 * alpha, skin.core, 0.9 * alpha);
-      this.trailGfx.lineBetween(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
-    }
 
     // Barrier (step 5 only), rotating slowly.
     this.barrierGfx.clear();

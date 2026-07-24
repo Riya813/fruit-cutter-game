@@ -1,6 +1,6 @@
 # Neon Fruit Cutter
 
-Slice fruit with glowing swipe trails, dodge bombs, and chain combos across 10 escalating levels — ending in the Level 10 **Fruit Storm** boss wave. Built with **TypeScript + Vite + Phaser 3**, all art and audio generated at runtime (no external assets).
+Slice fruit with glowing swipe trails, dodge bombs, and chain combos across **40 levels in four worlds** — Twilight Orchard, Windward Grove, Ion Tempest, and Aurora Summit — each ending in a storm boss. Built with **TypeScript + Vite + Phaser 3**, all art and audio generated at runtime (no external assets).
 
 ## Run it
 
@@ -48,11 +48,24 @@ All specials are always active in Endless and Daily.
 ### Frenzy orbs
 Reaching the ×5 multiplier launches a star orb. Slice it for one of two rewards (50/50): **MEGA SLICE** (every fruit on screen is cut instantly, scored with your current multiplier) or **×2 POINTS for 6 seconds**. One orb per streak build — lose the streak, earn it again.
 
-### Blade skins
-Total stars unlock trail skins, selectable from the menu: Neon Pink (default) → Plasma Cyan (10★) → Solar Gold (20★) → Spectrum, a hue-cycling rainbow blade (30★).
+### Blade effects (10)
+Total stars (max 120) unlock trail effects, cycled from the menu's BLADE button. Each renders the trail differently:
+
+| Blade | Stars | Effect |
+|---|---|---|
+| Lavender Mist | 0 | Soft lavender glow (default) |
+| Plasma Cyan | 8 | Cyan glow |
+| Ember Blade | 16 | Fire trail shedding falling embers |
+| Electric Arc | 24 | Jagged flickering lightning |
+| Petal Wind | 36 | Sheds spinning pink petals |
+| Frost Edge | 48 | Icy glow with rising frost sparkles |
+| Solar Gold | 60 | Warm gold glow |
+| Glitch Blade | 75 | Cyan/magenta chromatic-aberration ghosts |
+| Shadow Reaper | 90 | Wide dark aura with smoke puffs |
+| Spectrum | 105 | Hue-cycling rainbow |
 
 ### Game modes
-- **Campaign**: the 10 levels below.
+- **Campaign**: 40 levels across four worlds. Levels 1-10 are hand-tuned (table below); 11-40 continue the curve by formula (`genLevel` in `src/config/levels.ts`) with a storm boss every 10th level and growing boss-storm bursts (12/15/18/21 fruit).
 - **Endless** (unlocks after clearing level 10): no timer, no target — survive as difficulty ramps forever (spawn rate, bombs, speed, wind, barriers, even storms past 90 s). Best score persists.
 - **Daily Challenge**: one fixed 60-second score attack. Spawns are seeded by the UTC date, so every player worldwide gets the identical fruit sequence — compare scores fairly. Resets at midnight UTC.
 - Fruit **bounces off the ceiling** — nothing escapes upward.
@@ -60,7 +73,7 @@ Total stars unlock trail skins, selectable from the menu: Neon Pink (default) �
 - **Stars**: ★★★ beat PAR score with no retries · ★★ clear with no retries · ★ clear after retrying.
 - Progress (unlocked levels, stars, best score, fastest clear, mute) persists in `localStorage`.
 
-## Level design table
+## Level design table (world 1; worlds 2-4 generated)
 
 | # | Name | Spawn (ms) | Burst | Bomb % | Spike % | Barriers | Speed | Wind | Time | Target | Par | Size mix S/M/B |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
