@@ -95,6 +95,14 @@ export class MenuScene extends Phaser.Scene {
     };
     updateInfo();
 
+    // Back to the rest of the site for users who land directly on this game.
+    const moreGames = label(this, GAME_WIDTH / 2, 548, 'MORE GAMES', 22, Palette.accent);
+    moreGames.setInteractive({ useHandCursor: true });
+    moreGames.on('pointerdown', () => {
+      Audio.start();
+      window.open('https://krazic.com/', '_blank', 'noopener,noreferrer');
+    });
+
     const touch = 'ontouchstart' in window;
     label(this, GAME_WIDTH / 2, GAME_HEIGHT - 22,
       touch ? 'Swipe to slice · tap ⏸ to pause' : 'Drag to slice  ·  Esc pause  ·  R restart  ·  M mute', 14);
